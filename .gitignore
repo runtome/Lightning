@@ -12,3 +12,5 @@ submission.csv
 
 #testing notebook
 test.ipynb
+
+__pycache__/
