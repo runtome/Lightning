@@ -12,7 +12,7 @@ import math
 def main():
     parser = argparse.ArgumentParser(description="Your program description here")
     parser.add_argument("--model_name", default= "hf_hub:timm/tf_efficientnet_b7.ns_jft_in1k", type=str, help="Model name")
-    parser.add_argument("--num_classes", type=int, help="Number of classes")
+    parser.add_argument("--num_classes", default=8, type=int, help="Number of classes")
     parser.add_argument("--num_epochs", type=int, default=5, help="Number of epochs (default: 5)")
     parser.add_argument("--base_path", type=str, help="Base path for data")
     parser.add_argument("--num_folds", type=int, default=5, help="Number of folds for StratifiedKFold (default: 5)")
@@ -27,8 +27,6 @@ def main():
     #Image path 
     base = os.getcwd()
     image_path = os.path.join(base,args.image_path)
-
-    print(image_path)
 
     #Transforms
     transforms = {
@@ -81,6 +79,8 @@ def main():
         # Create a PyTorch Lightning module
         model = CustomModel(args.model_name, args.num_classes)    
         lightning_module = MyLightningModule(model,T_max=tmax)
+
+        print(model)
 
         # Create PyTorch Lightning data loaders
         train_dataloader = torch.utils.data.DataLoader(train_set, batch_size=args.train_batch_size, shuffle=True)

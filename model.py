@@ -9,9 +9,11 @@ import evaluate
 class CustomModel(nn.Module):
     def __init__(self, model_name, num_classes):
         super(CustomModel, self).__init__()
+        self.num_classes = num_classes
+        self.model_name = model_name
 
         # Load the pre-trained model from 'timm'
-        self.base_model = timm.create_model(model_name, pretrained=True,num_classes=num_classes)
+        self.base_model = timm.create_model(model_name=self.model_name, pretrained=True,num_classes=self.num_classes)
 
     def forward(self, x):
         # Forward pass through the base model
