@@ -9,3 +9,6 @@ train/
 
 info.csv
 submission.csv
+
+#testing notebook
+test.ipynb

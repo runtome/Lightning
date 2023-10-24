@@ -12,27 +12,9 @@ from sklearn.model_selection import StratifiedKFold
 from torchvision import datasets
 import torchvision.transforms as T
 import evaluate
+import argparse
 
 
-# Define your custom dataset class if not already defined
-class CustomDataset(Dataset):
-    def __init__(self, image_paths, labels, transform=None):
-        self.image_paths = image_paths
-        self.labels = labels
-        self.transform = transform
-
-    def __len__(self):
-        return len(self.image_paths)
-
-    def __getitem__(self, idx):
-        # Load and preprocess the image if needed
-        image = Image.open(self.image_paths[idx])  # Replace with your image loading function
-        label = self.labels[idx]
-
-        if self.transform:
-            image = self.transform(image)
-
-        return image, label
 
 class CustomModule(pl.LightningModule):
     def __init__(self, model_name, num_classes):
@@ -78,20 +60,31 @@ class CustomModule(pl.LightningModule):
         return [optimizer], [scheduler]
 
 if __name__ == '__main__':
-    # Define your data and other parameters
-    model_name = "hf_hub:timm/tf_efficientnet_b7.ns_jft_in1k"
-    num_classes = 8
-    num_epochs = 5
-    base_path = '/content/train/train/'
-    num_folds = 5  # Number of folds for StratifiedKFold
-    n_splits = 5 # Number of folds
-    train_batch_size = 8
-    eval_batch_size = 8 
+    parser = argparse.ArgumentParser(description="Your program description here")
+    parser.add_argument("--model_name", default= "hf_hub:timm/tf_efficientnet_b7.ns_jft_in1k", type=str, help="Model name")
+    parser.add_argument("--num_classes", type=int, help="Number of classes")
+    parser.add_argument("--num_epochs", type=int, default=5, help="Number of epochs (default: 5)")
+    parser.add_argument("--base_path", type=str, help="Base path for data")
+    parser.add_argument("--num_folds", type=int, default=5, help="Number of folds for StratifiedKFold (default: 5)")
+    parser.add_argument("--train_batch_size", type=int, default=8, help="Training batch size (default: 8)")
+    parser.add_argument("--eval_batch_size", type=int, default=8, help="Evaluation batch size (default: 8)")
+    parser.add_argument("--image_path", type=str, default='train/train', help="input image path example train/train")
 
+    args = parser.parse_args()
+
+    #Using argus
+    model_name = args.model_name
+    num_classes = args.num_classes
+    num_epochs = args.num_epochs
+    base_path = args.base_path
+    num_folds = args.num_folds
+    train_batch_size =args.train_batch_size
+    eval_batch_size = args.eval_batch_size
+    path = args.image_path
 
     #Image path 
     base = os.getcwd()
-    image_path = os.path.join(base,'train','train')
+    image_path = os.path.join(base,path)
 
     #Transforms
     transforms = {
@@ -118,7 +111,7 @@ if __name__ == '__main__':
 
 
     # Initialize StratifiedKFold
-    skf = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=42)
+    skf = StratifiedKFold(n_splits=num_folds, shuffle=True, random_state=42)
     
 
 
@@ -138,7 +131,7 @@ if __name__ == '__main__':
                                                         batch_size=eval_batch_size, 
                                                         shuffle=False,)
 
-        print(f"Fold {fold+1} of {n_splits}")
+        print(f"Fold {fold+1} of {num_folds}")
 
         # Create a PyTorch Lightning module
         model = CustomModule(model_name, num_classes)
