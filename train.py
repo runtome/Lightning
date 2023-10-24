@@ -80,8 +80,6 @@ def main():
         model = CustomModel(args.model_name, args.num_classes)    
         lightning_module = MyLightningModule(model,T_max=tmax)
 
-        print(model)
-
         # Create PyTorch Lightning data loaders
         train_dataloader = torch.utils.data.DataLoader(train_set, batch_size=args.train_batch_size, shuffle=True)
         val_dataloader = torch.utils.data.DataLoader(val_set, batch_size=args.eval_batch_size, shuffle=False)
