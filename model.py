@@ -29,6 +29,7 @@ class MyLightningModule(pl.LightningModule):
         self.metric = evaluate.load("f1")
         self.save_hyperparameters(ignore=['model'])
         self.T_max = T_max
+        self.metric = evaluate.load("f1") ##Add evaluate 
 
     def forward(self, x):
         # Define the forward pass of your model
@@ -38,6 +39,12 @@ class MyLightningModule(pl.LightningModule):
         inputs, targets = batch
         outputs = self(inputs)
         loss = self.criterion(outputs, targets)
+
+        ##Add Evaluate log 
+        pred = outputs.argmax(-1)
+        acc = self.metric.compute(predictions=pred, references=targets, average='macro')['f1']
+        self.log('train_accuracy', acc)
+
         self.log('train_loss', loss)  # Log the loss for visualization
         return loss
 
@@ -45,6 +52,12 @@ class MyLightningModule(pl.LightningModule):
         inputs, targets = batch
         outputs = self(inputs)
         loss = self.criterion(outputs, targets)
+
+        ##Add Evaluate log 
+        pred = outputs.argmax(-1)
+        acc = self.metric.compute(predictions=pred, references=targets, average='macro')['f1']
+        self.log('val_accuracy', acc)
+
         self.log('val_loss', loss)  # Log the validation loss
         return loss
 
