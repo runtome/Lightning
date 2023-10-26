@@ -7,7 +7,7 @@ import torchvision.transforms as T
 import argparse
 from model import CustomModel, MyLightningModule
 import math
-
+from print_model import model_information
 
 def main():
     parser = argparse.ArgumentParser(description="Your program description here")
@@ -23,6 +23,8 @@ def main():
     parser.add_argument("--random", type=int, default=42, help="Random stage (default: 42)")
 
     args = parser.parse_args()
+
+    model_information(args.model_name , args.num_classes, args.img_size,args.train_batch_size)
 
     #Image path 
     base = os.getcwd()
