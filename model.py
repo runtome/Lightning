@@ -30,6 +30,7 @@ class MyLightningModule(pl.LightningModule):
         self.save_hyperparameters(ignore=['model'])
         self.T_max = T_max
         self.metric = evaluate.load("f1") ##Add evaluate 
+        self.learning_rate = 5e-4
 
     def forward(self, x):
         # Define the forward pass of your model
@@ -43,9 +44,9 @@ class MyLightningModule(pl.LightningModule):
         ##Add Evaluate log 
         pred = outputs.argmax(-1)
         acc = self.metric.compute(predictions=pred, references=targets, average='macro')['f1']
-        self.log('train_accuracy', acc)
+        self.log('train_accuracy', acc , prog_bar=True)
 
-        self.log('train_loss', loss)  # Log the loss for visualization
+        self.log('train_loss', loss, prog_bar=True)  # Log the loss for visualization
         return loss
 
     def validation_step(self, batch, batch_idx):
@@ -56,13 +57,13 @@ class MyLightningModule(pl.LightningModule):
         ##Add Evaluate log 
         pred = outputs.argmax(-1)
         acc = self.metric.compute(predictions=pred, references=targets, average='macro')['f1']
-        self.log('val_accuracy', acc)
+        self.log('val_accuracy', acc , prog_bar=True)
 
-        self.log('val_loss', loss)  # Log the validation loss
+        self.log('val_loss', loss,prog_bar=True)  # Log the validation loss
         return loss
 
     def configure_optimizers(self):
-        optimizer = AdamW(self.parameters(), lr=5e-4)
+        optimizer = AdamW(self.parameters(), lr=self.learning_rate)
         scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=self.T_max)
         return [optimizer], [scheduler]
 
