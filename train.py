@@ -79,8 +79,7 @@ def main():
         print(f"Fold {fold+1} of {args.num_folds}")
 
         # Create a PyTorch Lightning module
-        model = CustomModel(args.model_name, args.num_classes)    
-        lightning_module = MyLightningModule(model,T_max=tmax)
+        lightning_module = MyLightningModule(args.model_name, args.num_classes,T_max=tmax)
 
         # Create PyTorch Lightning data loaders
         train_dataloader = torch.utils.data.DataLoader(train_set, batch_size=args.train_batch_size, shuffle=True)
