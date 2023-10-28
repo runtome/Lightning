@@ -7,12 +7,12 @@ import evaluate
 
     
 class MyLightningModule(pl.LightningModule):
-    def __init__(self, model_name , num_classes, T_max):
+    def __init__(self, model_name , num_classes, T_max , lr):
         super(MyLightningModule, self).__init__()
         self.model_name = model_name
         self.num_classes = num_classes
         self.T_max = T_max
-        self.learning_rate = 5e-4
+        self.learning_rate = lr 
         self.criterion = nn.CrossEntropyLoss()
         self.metric = evaluate.load("f1")
         self.save_hyperparameters(ignore=['model'])

@@ -5,7 +5,7 @@ from sklearn.model_selection import StratifiedKFold
 from torchvision import datasets
 import torchvision.transforms as T
 import argparse
-from model import CustomModel, MyLightningModule
+from model import MyLightningModule
 import math
 from print_model import model_information
 
@@ -14,10 +14,10 @@ def main():
     parser.add_argument("--model_name", default= "hf_hub:timm/tf_efficientnet_b7.ns_jft_in1k", type=str, help="Model name")
     parser.add_argument("--num_classes", default=8, type=int, help="Number of classes")
     parser.add_argument("--num_epochs", type=int, default=5, help="Number of epochs (default: 5)")
-    parser.add_argument("--base_path", type=str, help="Base path for data")
     parser.add_argument("--num_folds", type=int, default=5, help="Number of folds for StratifiedKFold (default: 5)")
     parser.add_argument("--train_batch_size", type=int, default=8, help="Training batch size (default: 8)")
     parser.add_argument("--eval_batch_size", type=int, default=8, help="Evaluation batch size (default: 8)")
+    parser.add_argument("--lr", type=float, default= 5e-4 , help="input learning_rate of AdamW")
     parser.add_argument("--image_path", type=str, default='train\\train', help="input image path example train/train")
     parser.add_argument("--img_size", type=int, default=224, help="Image size (default: 224)")
     parser.add_argument("--random", type=int, default=42, help="Random stage (default: 42)")
@@ -79,7 +79,7 @@ def main():
         print(f"Fold {fold+1} of {args.num_folds}")
 
         # Create a PyTorch Lightning module
-        lightning_module = MyLightningModule(args.model_name, args.num_classes,T_max=tmax)
+        lightning_module = MyLightningModule(args.model_name, args.num_classes,T_max=tmax , lr=args.lr)
 
         # Create PyTorch Lightning data loaders
         train_dataloader = torch.utils.data.DataLoader(train_set, batch_size=args.train_batch_size, shuffle=True)
