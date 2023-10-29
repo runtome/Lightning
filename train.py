@@ -12,7 +12,7 @@ from print_model import model_information
 def main():
     parser = argparse.ArgumentParser(description="Your program description here")
     parser.add_argument("--model_name", default= "hf_hub:timm/tf_efficientnet_b7.ns_jft_in1k", type=str, help="Model name")
-    parser.add_argument("--num_classes", default=8, type=int, help="Number of classes")
+    parser.add_argument("--num_classes", type=int,  default=8 ,help="Number of classes")
     parser.add_argument("--num_epochs", type=int, default=5, help="Number of epochs (default: 5)")
     parser.add_argument("--num_folds", type=int, default=5, help="Number of folds for StratifiedKFold (default: 5)")
     parser.add_argument("--train_batch_size", type=int, default=8, help="Training batch size (default: 8)")
