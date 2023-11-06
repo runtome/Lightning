@@ -14,7 +14,6 @@ class MyLightningModule(pl.LightningModule):
         self.T_max = T_max
         self.learning_rate = lr 
         self.criterion = nn.CrossEntropyLoss()
-        self.metric = evaluate.load("f1")
         self.save_hyperparameters(ignore=['model'])
         self.metric = evaluate.load("f1") ##Add evaluate 
         self.model = timm.create_model(model_name=self.model_name, pretrained=True,num_classes=self.num_classes)
